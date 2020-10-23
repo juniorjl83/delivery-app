@@ -13,23 +13,14 @@ import java.util.Queue;
  */
 public class FileReader {
 
-    protected Queue<String> queue = null;
-    private final PropertiesLoader propertiesLoader;
-
-    /**
-     * class constructor
-     *
-     * @param propertiesLoader
-     */
-    public FileReader(PropertiesLoader propertiesLoader) {
-        this.queue = new LinkedList<>();
-        this.propertiesLoader = propertiesLoader;
-    }
+    protected Queue<String> queue;
 
     /**
      * method to start reading the file
      */
     public Queue<String> read(int id) {
+        PropertiesLoader propertiesLoader = PropertiesLoader.getInstance();
+        queue = new LinkedList<String>();
         String filename = String.format("in%s.txt", id);
         File file = new File(propertiesLoader.getProperty("file.input.path") + filename);
 

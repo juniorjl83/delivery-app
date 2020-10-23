@@ -28,12 +28,12 @@ public class Drone {
      * @param propertiesLoader
      * @param id
      */
-    public Drone(PropertiesLoader propertiesLoader, int id, FileReader reader, FileWriter writer) {
+    public Drone(int id, FileReader reader, FileWriter writer) {
         this.x = 0;
         this.y = 0;
-        this.direction = 0;
-        this.propertiesLoader = propertiesLoader;
         this.id = id;
+        this.direction = 0;
+        this.propertiesLoader = PropertiesLoader.getInstance();
         this.queue = new LinkedList<String>();
         this.reader = reader;
         this.writer = writer;
@@ -47,10 +47,10 @@ public class Drone {
         int numberDeliveries = propertiesLoader.getIntProperty("max.delivery.to.attend");
         Queue<String> orders = new LinkedList<>();
         String controlValue = "";
+
         while (!queue.isEmpty()) {
             for (int i = 0; i < numberDeliveries && !queue.isEmpty(); i++) {
                 orders.add(queue.remove());
-
             }
 
             while (!orders.isEmpty()) {
@@ -59,8 +59,7 @@ public class Drone {
                     System.out.println(String.format(propertiesLoader.getProperty("error.exceed.limit"), id, order));
                 } else {
                     runDelivery(order, false);
-                    FileWriter fw = new FileWriter(propertiesLoader);
-                    fw.writeFile(getActualPosition(), id);
+                    writer.writeFile(getActualPosition(), id);
                 }
                 setInitialPosition();
             }
@@ -75,9 +74,10 @@ public class Drone {
     }
 
     protected boolean isValidDestinationLimit(String sequence) {
-        runDelivery(sequence, true);
         int limit = propertiesLoader.getIntProperty("blocks.distance");
         boolean result = true;
+        runDelivery(sequence, true);
+
         if (Math.abs(x) > limit || Math.abs(y) > limit) {
             result = false;
         }

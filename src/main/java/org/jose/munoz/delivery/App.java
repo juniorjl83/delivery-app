@@ -9,14 +9,15 @@ public class App {
     public static void main(String[] args) {
         PropertiesLoader propertiesLoader = PropertiesLoader.getInstance();
         int numberDrones = propertiesLoader.getIntProperty("drones.quantity");
-
         Thread[] threads = new Thread[numberDrones];
+
         for (int i = 0; i < threads.length; i++) {
             int id = i + 1;
             threads[i] = new Thread(new Runnable() {
                 public void run() {
-                    Drone drone = new Drone(propertiesLoader, id,
-                            new FileReader(propertiesLoader), new FileWriter(propertiesLoader));
+                    FileWriter fw = new FileWriter();
+                    FileReader fr = new FileReader();
+                    Drone drone = new Drone(id, fr, fw);
                     drone.deliver();
                 }
             });
