@@ -30,12 +30,11 @@ public class FileReader {
      * method to start reading the file
      */
     public Queue<String> read(int id) {
-        BufferedReader br = null;
         String filename = String.format("in%s.txt", id);
-        try {
+        File file = new File(propertiesLoader.getProperty("file.input.path") + filename);
+
+        try (BufferedReader br = new BufferedReader(new java.io.FileReader(file))) {
             System.out.println(String.format(propertiesLoader.getProperty("reading.info"), id, filename));
-            br = new BufferedReader(new java.io.FileReader(
-                    new File(propertiesLoader.getProperty("file.input.path") + filename)));
             String buffer = null;
             while ((buffer = br.readLine()) != null) {
                 queue.add(buffer);
@@ -44,14 +43,6 @@ public class FileReader {
             System.out.println(String.format(propertiesLoader.getProperty("error.input.file.not.found"), id, filename));
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (br != null) {
-                    br.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
         return queue;
     }
